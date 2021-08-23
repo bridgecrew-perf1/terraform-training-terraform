@@ -14,7 +14,7 @@ variable "aws_profile" {
 variable "prefix" {
   type        = string
   description = "Training prefix for resources"
-  default     = "docker-"
+  default     = "terraform"
 }
 
 variable "tags" {

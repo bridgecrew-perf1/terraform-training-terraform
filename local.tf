@@ -1,5 +1,5 @@
 locals {
 
-  prefix = "docker-%{if terraform.workspace != "default"}${terraform.workspace}-%{else}%{endif}"
+  prefix = "${var.prefix}-%{if terraform.workspace != "default"}${terraform.workspace}-%{else}%{endif}"
 
 }
