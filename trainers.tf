@@ -62,10 +62,10 @@ resource "aws_iam_group_policy_attachment" "trainers_attach_policy_TrainerPolicy
 resource "aws_iam_user" "trainer" {
   for_each = toset(local.trainers)
 
-  name = "${local.prefix}${each.key}"
-  # path          = each.value["path"]
+  name          = local.trainers_prefixed[each.key]
   force_destroy = true
   tags          = merge(var.tags, {})
+  # path          = each.value["path"]
 }
 
 resource "aws_iam_access_key" "trainer" {
@@ -77,8 +77,39 @@ resource "aws_iam_access_key" "trainer" {
 resource "aws_iam_user_group_membership" "trainer" {
   for_each = toset(local.trainers)
 
-  user = "${local.prefix}${each.key}"
+  user = local.trainers_prefixed[each.key]
   groups = [
     aws_iam_group.trainers.name,
   ]
+}
+
+resource "random_password" "trainer" {
+  for_each = toset(local.trainers)
+
+  length  = 8
+  special = false
+}
+
+resource "null_resource" "trainer-login-profile" {
+  for_each = toset(local.trainers)
+  depends_on = [
+    aws_iam_user.trainer
+  ]
+
+  triggers = {
+    aws_profile = var.aws_profile
+    user_name   = local.trainers_prefixed[each.key]
+  }
+
+  provisioner "local-exec" {
+    when       = create
+    on_failure = fail
+    command    = "aws --profile ${self.triggers.aws_profile} iam create-login-profile --user-name ${self.triggers.user_name} --password ${random_password.trainer[each.key].result} --no-password-reset-required"
+  }
+
+  provisioner "local-exec" {
+    when       = destroy
+    on_failure = continue
+    command    = "aws --profile ${self.triggers.aws_profile} iam delete-login-profile --user-name ${self.triggers.user_name}"
+  }
 }

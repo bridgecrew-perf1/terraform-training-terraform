@@ -6,14 +6,16 @@ resource "local_file" "save_users" {
     {
       "trainers" = {
         for user in local.trainers : aws_iam_user.trainer[user].name => {
-          "access" = aws_iam_access_key.trainer[user].id,
-          "secret" = aws_iam_access_key.trainer[user].secret,
+          "password" = random_password.trainer[user].result,
+          "access"   = aws_iam_access_key.trainer[user].id,
+          "secret"   = aws_iam_access_key.trainer[user].secret,
         }
       },
       "users" = {
         for user in local.users : aws_iam_user.user[user].name => {
-          "access" = aws_iam_access_key.user[user].id,
-          "secret" = aws_iam_access_key.user[user].secret,
+          "password" = random_password.user[user].result,
+          "access"   = aws_iam_access_key.user[user].id,
+          "secret"   = aws_iam_access_key.user[user].secret,
         }
       }
     }

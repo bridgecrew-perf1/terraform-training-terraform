@@ -20,18 +20,6 @@ permissions are in policy
 }
 
 
-region restricted:
-- create organization
-- policy:
-aws:RequestedRegion
-
-
-в master:
-- создать organization unit
-
-1) create OU (in master account)
-2) put all students' accounts
-3) attach SCP=service control policy= policies to OU
 
 
 по регионам ограничение в
@@ -39,8 +27,6 @@ https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_
 
 
 https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps_examples_ec2.html
-
-
 
 
 TODO:
@@ -97,8 +83,13 @@ TODO:
 }
 q: quotas < 10 (runnning?) instances
 
+как вычистят
+деньги
+- инвентаризация
+- billing panel
 
-для курса нужно работать в консоли
+
+[x] для курса нужно работать в консоли
 нужно зайти в консоль
 от Димы:
 resource "aws_iam_user" "adm-025-student" {
@@ -117,8 +108,12 @@ resource "aws_iam_user" "adm-025-student" {
 }
 
 
+[Не нужно] - работаем без организации:
+  region restricted:
+  - create organization
+  - policy:
+  aws:RequestedRegion
 
-как вычистят
-деньги
-- инвентаризация
-- billing panel
+  1) create OU (in master account)
+  2) put all students' accounts
+  3) attach SCP=service control policy= policies to OU
