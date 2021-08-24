@@ -63,11 +63,16 @@ resource "aws_iam_user_group_membership" "student" {
   ]
 }
 
+# https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html#default-policy-details
 resource "random_password" "student" {
   for_each = toset(local.students)
 
-  length  = 8
-  special = false
+  length           = 8
+  override_special = "_-"
+  min_upper        = 1
+  min_lower        = 1
+  min_numeric      = 1
+  min_special      = 1
 }
 
 resource "null_resource" "student-login-profile" {
