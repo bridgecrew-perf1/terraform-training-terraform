@@ -14,18 +14,18 @@ locals {
     trainer => "${local.prefix}${trainer}"
   }
 
-  users_raw = [
-    for line in split("\n", file("${path.module}/data/users.txt")) :
+  students_raw = [
+    for line in split("\n", file("${path.module}/data/students.txt")) :
     trimspace(line)
   ]
 
-  users = [
-    for line in local.users_raw :
+  students = [
+    for line in local.students_raw :
     line if length(line) > 0 && substr(line, 0, 1) != "#"
   ]
 
-  users_prefixed = {
-    for user in local.users :
-    user => "${local.prefix}${user}"
+  students_prefixed = {
+    for student in local.students :
+    student => "${local.prefix}${student}"
   }
 }

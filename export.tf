@@ -5,17 +5,17 @@ resource "local_file" "save_users" {
     # "./templates/users.tpl",
     {
       "trainers" = {
-        for user in local.trainers : aws_iam_user.trainer[user].name => {
-          "password" = random_password.trainer[user].result,
-          "access"   = aws_iam_access_key.trainer[user].id,
-          "secret"   = aws_iam_access_key.trainer[user].secret,
+        for trainer in local.trainers : aws_iam_user.trainer[trainer].name => {
+          "password" = random_password.trainer[trainer].result,
+          "access"   = aws_iam_access_key.trainer[trainer].id,
+          "secret"   = aws_iam_access_key.trainer[trainer].secret,
         }
       },
-      "users" = {
-        for user in local.users : aws_iam_user.user[user].name => {
-          "password" = random_password.user[user].result,
-          "access"   = aws_iam_access_key.user[user].id,
-          "secret"   = aws_iam_access_key.user[user].secret,
+      "students" = {
+        for student in local.students : aws_iam_user.student[student].name => {
+          "password" = random_password.student[student].result,
+          "access"   = aws_iam_access_key.student[student].id,
+          "secret"   = aws_iam_access_key.student[student].secret,
         }
       }
     }
