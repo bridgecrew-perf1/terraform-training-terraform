@@ -32,10 +32,10 @@ resource "aws_iam_policy" "student_general" {
   tags = merge(var.tags, {})
 }
 
-resource "aws_iam_policy" "student_ec2_keypairs" {
-  name        = "${local.prefix}student-ec2-keypairs"
+resource "aws_iam_policy" "student_aws_key_pair" {
+  name        = "${local.prefix}student-aws-key-pair"
   path        = "/"
-  description = "Set of ec2-keypairs rules"
+  description = "Set of aws_key_pair rules"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -70,10 +70,10 @@ resource "aws_iam_policy" "student_ec2_keypairs" {
 
 # Based on:
 # https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_ec2_securitygroups-vpc.html
-resource "aws_iam_policy" "student_ec2" {
-  name        = "${local.prefix}student-ec2"
+resource "aws_iam_policy" "student_aws_security_group" {
+  name        = "${local.prefix}student-aws-security-group"
   path        = "/"
-  description = "Set of ec2 rules"
+  description = "Set of aws_security_group rules"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -121,19 +121,79 @@ resource "aws_iam_policy" "student_ec2" {
   tags = merge(var.tags, {})
 }
 
-resource "aws_iam_group_policy_attachment" "users_attach_policy_StudentGeneral" {
+resource "aws_iam_policy" "student_aws_instance" {
+  name        = "${local.prefix}student-aws-instance"
+  path        = "/"
+  description = "Set of aws_instance rules"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ec2:DescribeInstances",
+          "ec2:DescribeInstanceAttribute",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeTags",
+          "ec2:DescribeVolumes",
+          "ec2:DescribeKeyPairs",
+          "ec2:DescribeInstanceCreditSpecifications",
+        ],
+        "Resource" : "*",
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ec2:MonitorInstances",
+          "ec2:RebootInstances",
+          "ec2:RunInstances",
+          "ec2:StartInstances",
+          "ec2:StopInstances",
+          "ec2:TerminateInstances",
+        ],
+        # "Resource" : "*",
+        "Resource" : [
+          "arn:aws:ec2:eu-central-1:901850860342:instance/*",
+          "arn:aws:ec2:eu-central-1::image/*",
+          "arn:aws:ec2:eu-central-1:901850860342:network-interface/*",
+          "arn:aws:ec2:eu-central-1:901850860342:security-group/*",
+          "arn:aws:ec2:eu-central-1:901850860342:subnet/*",
+          "arn:aws:ec2:eu-central-1:901850860342:volume/*",
+
+          "arn:aws:ec2:eu-central-1:901850860342:vpc/*",
+          "arn:aws:ec2:eu-central-1:901850860342:placement-group/*",
+          "arn:aws:ec2:eu-central-1:901850860342:capacity-reservation/*",
+          "arn:aws:elastic-inference:eu-central-1:901850860342:elastic-inference-accelerator/*",
+          "arn:aws:ec2:eu-central-1:901850860342:launch-template/*",
+          "arn:aws:ec2:eu-central-1:901850860342:elastic-gpu/*",
+          "arn:aws:ec2:eu-central-1:901850860342:key-pair/*",
+          "arn:aws:ec2:eu-central-1::snapshot/*"
+        ]
+      },
+    ]
+  })
+  tags = merge(var.tags, {})
+}
+
+resource "aws_iam_group_policy_attachment" "users_attach_policy_student_general" {
   group      = aws_iam_group.students.name
   policy_arn = aws_iam_policy.student_general.arn
 }
 
-resource "aws_iam_group_policy_attachment" "users_attach_policy_StudentEc2Keypairs" {
+resource "aws_iam_group_policy_attachment" "users_attach_policy_student_aws_key_pair" {
   group      = aws_iam_group.students.name
-  policy_arn = aws_iam_policy.student_ec2_keypairs.arn
+  policy_arn = aws_iam_policy.student_aws_key_pair.arn
 }
 
-resource "aws_iam_group_policy_attachment" "users_attach_policy_StudentEc2" {
+resource "aws_iam_group_policy_attachment" "users_attach_policy_student_aws_security_group" {
   group      = aws_iam_group.students.name
-  policy_arn = aws_iam_policy.student_ec2.arn
+  policy_arn = aws_iam_policy.student_aws_security_group.arn
+}
+
+resource "aws_iam_group_policy_attachment" "users_attach_policy_student_aws_instance" {
+  group      = aws_iam_group.students.name
+  policy_arn = aws_iam_policy.student_aws_instance.arn
 }
 
 resource "aws_iam_user" "student" {
