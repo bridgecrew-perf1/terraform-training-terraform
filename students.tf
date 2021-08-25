@@ -51,9 +51,7 @@ resource "aws_iam_policy" "student_aws_key_pair" {
           "ec2:CreateKeyPair",
           "ec2:DeleteKeyPair",
         ],
-        "Resource" : "*",
-        # "Resource" : "arn:aws:ec2:eu-central-1:901850860342:*",
-        # "Resource" : "arn:aws:ec2:eu-central-1:901850860342:key-pair/*",
+        "Resource" : "arn:aws:ec2:eu-central-1:901850860342:key-pair/*",
       },
       # {
       #   "Effect" : "Allow",
