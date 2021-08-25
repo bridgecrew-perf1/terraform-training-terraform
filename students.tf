@@ -51,7 +51,7 @@ resource "aws_iam_policy" "student_aws_key_pair" {
           "ec2:CreateKeyPair",
           "ec2:DeleteKeyPair",
         ],
-        "Resource" : "arn:aws:ec2:eu-central-1:901850860342:key-pair/*",
+        "Resource" : "arn:aws:ec2:${local.target_region}:${local.target_account}:key-pair/*",
       },
       # {
       #   "Effect" : "Allow",
@@ -96,7 +96,7 @@ resource "aws_iam_policy" "student_aws_security_group" {
           "ec2:ModifySecurityGroupRules"
         ],
         "Resource" : [
-          "arn:aws:ec2:eu-central-1:901850860342:security-group-rule/*"
+          "arn:aws:ec2:${local.target_region}:${local.target_account}:security-group-rule/*"
         ]
       },
       {
@@ -115,7 +115,7 @@ resource "aws_iam_policy" "student_aws_security_group" {
           "ec2:CreateSecurityGroup",
           "ec2:DeleteSecurityGroup",
         ],
-        "Resource" : "arn:aws:ec2:eu-central-1:901850860342:security-group/*",
+        "Resource" : "arn:aws:ec2:${local.target_region}:${local.target_account}:security-group/*",
       },
     ]
   })
@@ -155,21 +155,21 @@ resource "aws_iam_policy" "student_aws_instance" {
         ],
         # "Resource" : "*",
         "Resource" : [
-          "arn:aws:ec2:eu-central-1:901850860342:instance/*",
-          "arn:aws:ec2:eu-central-1::image/*",
-          "arn:aws:ec2:eu-central-1:901850860342:network-interface/*",
-          "arn:aws:ec2:eu-central-1:901850860342:security-group/*",
-          "arn:aws:ec2:eu-central-1:901850860342:subnet/*",
-          "arn:aws:ec2:eu-central-1:901850860342:volume/*",
+          "arn:aws:ec2:${local.target_region}:${local.target_account}:instance/*",
+          "arn:aws:ec2:${local.target_region}::image/*",
+          "arn:aws:ec2:${local.target_region}:${local.target_account}:network-interface/*",
+          "arn:aws:ec2:${local.target_region}:${local.target_account}:security-group/*",
+          "arn:aws:ec2:${local.target_region}:${local.target_account}:subnet/*",
+          "arn:aws:ec2:${local.target_region}:${local.target_account}:volume/*",
 
-          "arn:aws:ec2:eu-central-1:901850860342:vpc/*",
-          "arn:aws:ec2:eu-central-1:901850860342:placement-group/*",
-          "arn:aws:ec2:eu-central-1:901850860342:capacity-reservation/*",
-          "arn:aws:elastic-inference:eu-central-1:901850860342:elastic-inference-accelerator/*",
-          "arn:aws:ec2:eu-central-1:901850860342:launch-template/*",
-          "arn:aws:ec2:eu-central-1:901850860342:elastic-gpu/*",
-          "arn:aws:ec2:eu-central-1:901850860342:key-pair/*",
-          "arn:aws:ec2:eu-central-1::snapshot/*"
+          "arn:aws:ec2:${local.target_region}:${local.target_account}:vpc/*",
+          "arn:aws:ec2:${local.target_region}:${local.target_account}:placement-group/*",
+          "arn:aws:ec2:${local.target_region}:${local.target_account}:capacity-reservation/*",
+          "arn:aws:elastic-inference:${local.target_region}:${local.target_account}:elastic-inference-accelerator/*",
+          "arn:aws:ec2:${local.target_region}:${local.target_account}:launch-template/*",
+          "arn:aws:ec2:${local.target_region}:${local.target_account}:elastic-gpu/*",
+          "arn:aws:ec2:${local.target_region}:${local.target_account}:key-pair/*",
+          "arn:aws:ec2:${local.target_region}::snapshot/*"
         ]
       },
       {
@@ -177,7 +177,7 @@ resource "aws_iam_policy" "student_aws_instance" {
         "Effect" : "Deny",
         "Action" : "ec2:RunInstances",
         "Resource" : [
-          "arn:aws:ec2:eu-central-1:901850860342:instance/*"
+          "arn:aws:ec2:${local.target_region}:${local.target_account}:instance/*"
         ],
         "Condition" : {
           "ForAnyValue:StringNotEquals" : {

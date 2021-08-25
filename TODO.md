@@ -1,29 +1,45 @@
 
 
-https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps_examples_ec2.html
 
-
-
-тренеру Administrator
-remote state
-репозиторий на github
-- Егор Urocukidodzi
-- Dima ...
-
-
-Каждый курс запускаются в рамках одного аккаунта = просто удалять ресурсы
-(пока не горит автоудаление)
-после тренинга используем префиксы
-
-
-Добавить из переменной
-- номер аккаунта ${aws_account_id} (что типа этого)
-- регион formatlist
-- есть ограничение на 6,144 знаков для политики -> разбить на несколько по регионам / for_each
-
-
+[ ] remote state
 Егор: нужен бакет для хранения состояния terraform
 + добавить права на запись
+
+репозиторий на github
+- Егор Urocukidodzi
+- Dima sadon
+
+[ ] квоты не более 10 машин на пользователя, например
+quotas < 10 (runnning?) instances
+
+
+[ ] как вычищять?
+деньги
+- инвентаризация
+- billing panel
+Каждый курс запускаются в рамках одного аккаунта = просто удалять ресурсы
+(пока не горит автоудаление)
+после тренинга можно
+- используем префиксы
+- использовать теги (не все ресурсы имеют, студентам сложнее создавать ресурсы)
+
+
+[x] Пока используем переменные `${local.target_region}:${local.target_account}` для указания региона и аккаунта.
+Если потребуется несколько регионов, то
+1) можно использовать condition
+  https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_variables.html
+2) использовать formatlist (менее предпочтительно):
+formatlist(
+      "arn:aws:ec2:%s:${local.target_account}:key-pair/*",
+      var.target_regions,
+    )
+
+[ ] есть ограничение на 6,144 знаков для политики -> разбить на несколько по регионам / for_each
+пока не вылезли
+> Для управляемых политик: для пользователя, роли или группы можно добавлять до 10 управляемых политик. Размер каждой управляемой политики не может превышать 6144 символов.
+https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html
+
+[x] тренеру Administrator
 
 
 c:\Work\TC\Trainings\My\terraform\dubovitsky\adm-025\terraform\m1>terraform apply
@@ -66,33 +82,6 @@ remote-state1
 
 ? что если две политики перекрываются
 - permissive (более строгая)
-
-квоты не более 10 машин на пользователя, например
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Deny",
-            "Action": "ec2:RunInstances",
-            "Resource": "*",
-            "Condition": {
-                "ForAnyValue:StringNotEquals": {
-                    "ec2:InstanceType": [
-                        "t2.micro",
-                        "t2.nano"
-                    ]
-                }
-            }
-        }
-    ]
-}
-q: quotas < 10 (runnning?) instances
-
-как вычистят
-деньги
-- инвентаризация
-- billing panel
 
 
 [x] проверить что студенты не могут делать лишнее

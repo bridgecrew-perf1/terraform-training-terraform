@@ -29,14 +29,19 @@ resource "aws_iam_policy" "trainer" {
         "Effect" : "Allow",
         # TODO: restrict access more
         # "Resource" : [
-        #   # "arn:aws:eks:*:901850860342:fargateprofile/*/*/*",
-        #   "arn:aws:eks:eu-central-1:901850860342:fargateprofile/*/*/*",
-        #   "arn:aws:eks:eu-central-1:901850860342:identityproviderconfig/kube-training/*/*/*",
-        #   "arn:aws:eks:eu-central-1:901850860342:addon/kube-training/*/*",
-        #   "arn:aws:eks:eu-central-1:901850860342:cluster/*",
-        #   "arn:aws:eks:eu-central-1:901850860342:nodegroup/kube/*/*"
+        #   # "arn:aws:eks:*:${local.target_account}:fargateprofile/*/*/*",
+        #   "arn:aws:eks:${local.target_region}:${local.target_account}:fargateprofile/*/*/*",
+        #   "arn:aws:eks:${local.target_region}:${local.target_account}:identityproviderconfig/kube-training/*/*/*",
+        #   "arn:aws:eks:${local.target_region}:${local.target_account}:addon/kube-training/*/*",
+        #   "arn:aws:eks:${local.target_region}:${local.target_account}:cluster/*",
+        #   "arn:aws:eks:${local.target_region}:${local.target_account}:nodegroup/kube/*/*"
         # ]
         Resource = "*",
+        "Condition" : {
+          "StringEquals" : {
+            "aws:RequestedRegion" : local.target_region
+          }
+        }
       }
     ]
   })
