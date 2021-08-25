@@ -24,7 +24,10 @@ resource "aws_iam_policy" "student_general" {
       },
       {
         "Effect" : "Allow",
-        "Action" : "ec2:DescribeAccountAttributes",
+        "Action" : [
+          "sts:GetCallerIdentity",
+          "ec2:DescribeAccountAttributes",
+        ],
         "Resource" : "*"
       },
     ]
@@ -171,6 +174,73 @@ resource "aws_iam_policy" "student_aws_instance" {
           "arn:aws:ec2:eu-central-1::snapshot/*"
         ]
       },
+      {
+        "Sid" : "RequireMicroInstanceType",
+        "Effect" : "Deny",
+        "Action" : "ec2:RunInstances",
+        "Resource" : [
+          "arn:aws:ec2:eu-central-1:901850860342:instance/*"
+        ],
+        "Condition" : {
+          "ForAnyValue:StringNotEquals" : {
+            "ec2:InstanceType" : [
+              "t2.micro",
+              "t2.nano",
+              "t2.small"
+            ]
+          }
+        }
+      }
+    ]
+  })
+  tags = merge(var.tags, {})
+}
+
+
+resource "aws_iam_policy" "student_aws_s3_bucket" {
+  name        = "${local.prefix}student-aws-s3-bucket"
+  path        = "/"
+  description = "Set of aws_s3_bucket rules"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:CreateBucket",
+          "s3:ListBucket",
+          "s3:DeleteBucket",
+          "s3:GetBucketAcl",
+          "s3:GetBucketCors",
+          "s3:GetBucketWebsite",
+          "s3:GetBucketVersioning",
+          "s3:GetAccelerateConfiguration",
+          "s3:GetBucketRequestPayment",
+          "s3:GetBucketLogging",
+          "s3:GetLifecycleConfiguration",
+          "s3:GetReplicationConfiguration",
+          "s3:GetBucketReplication",
+          "s3:GetEncryptionConfiguration",
+          "s3:GetBucketEncryption",
+          "s3:GetBucketObjectLockConfiguration",
+          "s3:GetBucketTagging",
+        ],
+        "Resource" : "arn:aws:s3:::*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          # See https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazons3.html
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:GetObjectTagging",
+          "s3:DeleteObject",
+          "s3:ListMultipartUploadParts",
+          "s3:AbortMultipartUpload",
+        ],
+        "Resource" : "arn:aws:s3:::*/*"
+      },
     ]
   })
   tags = merge(var.tags, {})
@@ -194,6 +264,11 @@ resource "aws_iam_group_policy_attachment" "users_attach_policy_student_aws_secu
 resource "aws_iam_group_policy_attachment" "users_attach_policy_student_aws_instance" {
   group      = aws_iam_group.students.name
   policy_arn = aws_iam_policy.student_aws_instance.arn
+}
+
+resource "aws_iam_group_policy_attachment" "users_attach_policy_student_aws_s3_bucket" {
+  group      = aws_iam_group.students.name
+  policy_arn = aws_iam_policy.student_aws_s3_bucket.arn
 }
 
 resource "aws_iam_user" "student" {
