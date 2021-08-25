@@ -9,59 +9,10 @@ data "aws_iam_policy" "AdministratorAccess" {
   tags = merge(var.tags, {})
 }
 
-data "aws_iam_policy" "AmazonEKSClusterPolicy" {
-  arn  = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  tags = merge(var.tags, {})
-}
-
-resource "aws_iam_policy" "trainer" {
-  name        = "${local.prefix}trainer-policy"
-  path        = "/"
-  description = "Permissions for trainers"
-
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Action" : "eks:*",
-        "Effect" : "Allow",
-        # TODO: restrict access more
-        # "Resource" : [
-        #   # "arn:aws:eks:*:${local.target_account}:fargateprofile/*/*/*",
-        #   "arn:aws:eks:${local.target_region}:${local.target_account}:fargateprofile/*/*/*",
-        #   "arn:aws:eks:${local.target_region}:${local.target_account}:identityproviderconfig/kube-training/*/*/*",
-        #   "arn:aws:eks:${local.target_region}:${local.target_account}:addon/kube-training/*/*",
-        #   "arn:aws:eks:${local.target_region}:${local.target_account}:cluster/*",
-        #   "arn:aws:eks:${local.target_region}:${local.target_account}:nodegroup/kube/*/*"
-        # ]
-        Resource = "*",
-        "Condition" : {
-          "StringEquals" : {
-            "aws:RequestedRegion" : local.target_region
-          }
-        }
-      }
-    ]
-  })
-  tags = merge(var.tags, {})
-}
-
 # Attach the policy to the group
 resource "aws_iam_group_policy_attachment" "trainers_attach_policy_AdministratorAccess" {
   group      = aws_iam_group.trainers.name
   policy_arn = data.aws_iam_policy.AdministratorAccess.arn
-}
-
-resource "aws_iam_group_policy_attachment" "trainers_attach_policy_AmazonEKSClusterPolicy" {
-  group      = aws_iam_group.trainers.name
-  policy_arn = data.aws_iam_policy.AmazonEKSClusterPolicy.arn
-}
-
-resource "aws_iam_group_policy_attachment" "trainers_attach_policy_TrainerPolicy" {
-  group      = aws_iam_group.trainers.name
-  policy_arn = aws_iam_policy.trainer.arn
 }
 
 resource "aws_iam_user" "trainer" {
