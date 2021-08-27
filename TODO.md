@@ -4,10 +4,7 @@
 [ ] remote state
 Егор: нужен бакет для хранения состояния terraform
 + добавить права на запись
-
-репозиторий на github
-- Егор Urocukidodzi
-- Dima sadon
+https://servicedesk.luxoft.com/browse/SD-2107441
 
 [ ] квоты не более 10 машин на пользователя, например
 quotas < 10 (runnning?) instances
@@ -24,24 +21,6 @@ quotas < 10 (runnning?) instances
 - использовать теги (не все ресурсы имеют, студентам сложнее создавать ресурсы)
 
 
-[x] Пока используем переменные `${local.target_region}:${local.target_account}` для указания региона и аккаунта.
-Если потребуется несколько регионов, то
-1) можно использовать condition
-  https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_variables.html
-2) использовать formatlist (менее предпочтительно):
-formatlist(
-      "arn:aws:ec2:%s:${local.target_account}:key-pair/*",
-      var.target_regions,
-    )
-
-[ ] есть ограничение на 6,144 знаков для политики -> разбить на несколько по регионам / for_each
-пока не вылезли
-> Для управляемых политик: для пользователя, роли или группы можно добавлять до 10 управляемых политик. Размер каждой управляемой политики не может превышать 6144 символов.
-https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html
-
-[x] тренеру Administrator
-
-
 c:\Work\TC\Trainings\My\terraform\dubovitsky\adm-025\terraform\m1>terraform apply
 ╷
 │ Error: Output refers to sensitive values
@@ -54,7 +33,6 @@ c:\Work\TC\Trainings\My\terraform\dubovitsky\adm-025\terraform\m1>terraform appl
 │
 │ If you do intend to export this data, annotate the output value as sensitive by adding the following argument:
 │     sensitive = true
-
 
 
 c:\Work\TC\Trainings\My\terraform\dubovitsky\adm-025\terraform\providers1>terraform apply
@@ -79,10 +57,26 @@ c:\Work\TC\Trainings\My\terraform\dubovitsky\adm-025\terraform\providers1>terraf
 remote-state1
 
 
+[ ] есть ограничение на 6,144 знаков для политики -> разбить на несколько по регионам / for_each
+пока не вылезли
+> Для управляемых политик: для пользователя, роли или группы можно добавлять до 10 управляемых политик. Размер каждой управляемой политики не может превышать 6144 символов.
+https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html
 
-? что если две политики перекрываются
-- permissive (более строгая)
+[x] репозиторий на github
+- Егор Urocukidodzi
+- Dima sadon
 
+[x] Пока используем переменные `${local.target_region}:${local.target_account}` для указания региона и аккаунта.
+Если потребуется несколько регионов, то
+1) можно использовать condition
+  https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_variables.html
+2) использовать formatlist (менее предпочтительно):
+formatlist(
+      "arn:aws:ec2:%s:${local.target_account}:key-pair/*",
+      var.target_regions,
+    )
+
+[x] дать тренеру права Administrator
 
 [x] проверить что студенты не могут делать лишнее
 ограничить регион https://aws.amazon.com/blogs/security/easier-way-to-control-access-to-aws-regions-using-iam-policies/

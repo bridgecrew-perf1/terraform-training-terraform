@@ -44,7 +44,7 @@ resource "random_password" "trainer" {
   for_each = toset(local.trainers)
 
   length           = 8
-  override_special = "_-"
+  override_special = "_"
   min_upper        = 1
   min_lower        = 1
   min_numeric      = 1

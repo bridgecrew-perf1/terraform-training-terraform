@@ -281,7 +281,8 @@ resource "aws_iam_user" "student" {
 resource "aws_iam_access_key" "student" {
   for_each = toset(local.students)
 
-  user = aws_iam_user.student[each.value].name
+  user   = aws_iam_user.student[each.value].name
+  status = "Inactive"
 }
 
 resource "aws_iam_user_group_membership" "student" {
@@ -298,7 +299,7 @@ resource "random_password" "student" {
   for_each = toset(local.students)
 
   length           = 8
-  override_special = "_-"
+  override_special = "_"
   min_upper        = 1
   min_lower        = 1
   min_numeric      = 1
