@@ -27,7 +27,8 @@ resource "aws_iam_user" "trainer" {
 resource "aws_iam_access_key" "trainer" {
   for_each = toset(local.trainers)
 
-  user = aws_iam_user.trainer[each.value].name
+  user   = aws_iam_user.trainer[each.value].name
+  status = "Active"
 }
 
 resource "aws_iam_user_group_membership" "trainer" {

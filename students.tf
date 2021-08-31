@@ -282,7 +282,7 @@ resource "aws_iam_access_key" "student" {
   for_each = toset(local.students)
 
   user   = aws_iam_user.student[each.value].name
-  status = "Inactive"
+  status = var.pause_training ? "Inactive" : "Active"
 }
 
 resource "aws_iam_user_group_membership" "student" {
