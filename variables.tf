@@ -7,7 +7,7 @@ variable "aws_region" {
 
 variable "aws_profile" {
   type        = string
-  description = "AWS profile"
+  description = "AWS profile to create training resources"
   default     = "default"
 }
 
