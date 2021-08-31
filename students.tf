@@ -140,6 +140,7 @@ resource "aws_iam_policy" "student_aws_instance" {
           "ec2:DescribeVolumes",
           "ec2:DescribeKeyPairs",
           "ec2:DescribeInstanceCreditSpecifications",
+          "ec2:DescribeNetworkInterfaces",
         ],
         "Resource" : "*",
       },
