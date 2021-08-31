@@ -86,6 +86,17 @@ resource "aws_iam_policy" "student_aws_security_group" {
           "ec2:DescribeSecurityGroupRules",
           "ec2:DescribeTags",
           # new rule (-s) comparing with reference above
+
+          "ec2:DescribeDhcpOptions",
+          "ec2:DescribeNetworkAcls",
+          "ec2:DescribeRouteTables",
+          "ec2:describeDhcpOptions",
+          "ec2:describeNetworkAcls",
+          "ec2:describeRouteTables",
+
+          "ec2:DescribeRouteTables",
+          "ec2:DescribeSubnets",
+
           "ec2:CreateTags",
         ],
         "Resource" : "*"
@@ -114,8 +125,13 @@ resource "aws_iam_policy" "student_aws_security_group" {
           "ec2:DescribeSecurityGroups",
           "ec2:CreateSecurityGroup",
           "ec2:DeleteSecurityGroup",
+
+
+
         ],
-        "Resource" : "arn:aws:ec2:${local.target_region}:${local.target_account}:security-group/*",
+        #"Resource" : "arn:aws:ec2:${local.target_region}:${local.target_account}:security-group/*",
+        "Resource" : "arn:aws:ec2:${local.target_region}:${local.target_account}:*",
+
       },
     ]
   })
@@ -225,6 +241,7 @@ resource "aws_iam_policy" "student_aws_s3_bucket" {
           "s3:GetBucketEncryption",
           "s3:GetBucketObjectLockConfiguration",
           "s3:GetBucketTagging",
+          "s3:ListBucketVersions",
         ],
         "Resource" : "arn:aws:s3:::*"
       },
