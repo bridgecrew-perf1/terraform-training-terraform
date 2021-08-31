@@ -4,6 +4,8 @@ resource "local_file" "save_users" {
     "${path.cwd}/data/templates/credentials.tpl",
     # "./templates/users.tpl",
     {
+      "account" = local.target_account,
+      "region"  = local.target_region,
       "trainers" = {
         for trainer in local.trainers : aws_iam_user.trainer[trainer].name => {
           "password" = random_password.trainer[trainer].result,
