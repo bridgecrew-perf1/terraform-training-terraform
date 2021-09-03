@@ -27,6 +27,7 @@ resource "aws_iam_policy" "student_general" {
         "Action" : [
           "sts:GetCallerIdentity",
           "ec2:DescribeAccountAttributes",
+          "ec2:DescribeVpcAttribute"
         ],
         "Resource" : "*"
       },
