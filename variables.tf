@@ -22,7 +22,8 @@ variable "tags" {
   type        = map(string)
   default = {
     training = "adm-025 terraform"
-    creator  = "maxim.suslov@dxc.com"
+    creator  = "Maxim Suslov"
+    trainer  = "Dmitry Dubovitsky"
   }
 }
 

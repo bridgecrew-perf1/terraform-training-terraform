@@ -8,14 +8,14 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket         = "terraform-dxc-state"
-    #dynamodb_table = "msuslov-tfstate-lock"
-    key            = "infra-adm025-terraform.tfstate"
-    region         = "eu-central-1"
-    encrypt        = true
-    profile        = "terraform20"
-  }
+  # backend "s3" {
+  #   bucket         = "msuslov-tfstate-bucket"
+  #   dynamodb_table = "msuslov-tfstate-lock"
+  #   key            = "infra-terraform.tfstate"
+  #   region         = "eu-central-1"
+  #   encrypt        = true
+  #   profile        = "terraform-msuslov"
+  # }
 }
 
 provider "aws" {

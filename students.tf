@@ -27,10 +27,55 @@ resource "aws_iam_policy" "student_general" {
         "Action" : [
           "sts:GetCallerIdentity",
           "ec2:DescribeAccountAttributes",
-          "ec2:DescribeVpcAttribute"
         ],
         "Resource" : "*"
       },
+    ]
+  })
+  tags = merge(var.tags, {})
+}
+
+resource "aws_iam_policy" "student_aws_console" {
+  name        = "${local.prefix}student-aws-console"
+  path        = "/"
+  description = "Provide permission to work in console"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "iam:GetAccountSummary",
+          "iam:ListAccountAliases",
+        ],
+        # "Resource" : "arn:aws:iam::*:user/$${aws:username}"
+        # "Resource" : "arn:aws:iam:${local.target_region}:${local.target_account}:user/*"
+        "Resource" : "*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "iam:ListAccessKeys",
+          "iam:ListMFADevices",
+          "iam:GetLoginProfile",
+          "iam:GetUser",
+          "iam:GetAccessKeyLastUsed",
+          "iam:UpdateAccessKey",
+          "iam:CreateAccessKey",
+          "iam:DeleteAccessKey",
+        ],
+        "Resource" : "arn:aws:iam::${local.target_account}:user/$${aws:username}"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "iam:ListAccessKeys",
+          "iam:ListMFADevices",
+          "iam:ListUsers",
+        ],
+        "Resource" : "arn:aws:iam::${local.target_account}:user/"
+      }
     ]
   })
   tags = merge(var.tags, {})
@@ -48,6 +93,12 @@ resource "aws_iam_policy" "student_aws_key_pair" {
         "Effect" : "Allow",
         "Action" : [
           "ec2:DescribeKeyPairs",
+        ],
+        "Resource" : "*",
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
           "ec2:ImportKeyPair",
           "ec2:CreateKeyPair",
           "ec2:DeleteKeyPair",
@@ -87,17 +138,10 @@ resource "aws_iam_policy" "student_aws_security_group" {
           "ec2:DescribeSecurityGroupRules",
           "ec2:DescribeTags",
           # new rule (-s) comparing with reference above
-
           "ec2:DescribeDhcpOptions",
           "ec2:DescribeNetworkAcls",
           "ec2:DescribeRouteTables",
-          "ec2:describeDhcpOptions",
-          "ec2:describeNetworkAcls",
-          "ec2:describeRouteTables",
-
-          "ec2:DescribeRouteTables",
           "ec2:DescribeSubnets",
-
           "ec2:CreateTags",
         ],
         "Resource" : "*"
@@ -114,6 +158,15 @@ resource "aws_iam_policy" "student_aws_security_group" {
       {
         "Effect" : "Allow",
         "Action" : [
+          "ec2:CreateSecurityGroup",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DescribeSecurityGroups",
+        ],
+        "Resource" : "arn:aws:ec2:${local.target_region}:${local.target_account}:*",
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
           "ec2:AuthorizeSecurityGroupIngress",
           "ec2:RevokeSecurityGroupIngress",
           "ec2:AuthorizeSecurityGroupEgress",
@@ -122,16 +175,9 @@ resource "aws_iam_policy" "student_aws_security_group" {
           "ec2:UpdateSecurityGroupRuleDescriptionsIngress",
           "ec2:UpdateSecurityGroupRuleDescriptionsEgress",
           # new rule (-s) comparing with reference above
-          "ec2:DescribeNetworkInterfaces",
-          "ec2:DescribeSecurityGroups",
-          "ec2:CreateSecurityGroup",
           "ec2:DeleteSecurityGroup",
-
-
-
         ],
-        #"Resource" : "arn:aws:ec2:${local.target_region}:${local.target_account}:security-group/*",
-        "Resource" : "arn:aws:ec2:${local.target_region}:${local.target_account}:*",
+        "Resource" : "arn:aws:ec2:${local.target_region}:${local.target_account}:security-group/*",
 
       },
     ]
@@ -153,6 +199,7 @@ resource "aws_iam_policy" "student_aws_instance" {
           "ec2:DescribeInstances",
           "ec2:DescribeInstanceAttribute",
           "ec2:DescribeVpcs",
+          "ec2:DescribeVpcAttribute",
           "ec2:DescribeTags",
           "ec2:DescribeVolumes",
           "ec2:DescribeKeyPairs",
@@ -164,6 +211,47 @@ resource "aws_iam_policy" "student_aws_instance" {
       {
         "Effect" : "Allow",
         "Action" : [
+          # for web
+          "ec2:DescribeInstanceTypes",
+          "ec2:DescribeImages",
+          "ec2:DescribeSnapshots",
+          "ec2:DescribeInstanceStatus",
+          "ec2:DescribeAddresses",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeSecurityGroups",
+          "compute-optimizer:GetEnrollmentStatus",
+        ],
+        "Resource" : "*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "iam:GetInstanceProfile",
+          "iam:ListInstanceProfiles"
+        ],
+        "Resource" : "arn:aws:iam::${local.target_account}:instance-profile/*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "cloudwatch:GetMetricStatistics",
+        ],
+        "Resource" : [
+          "arn:aws:ec2:${local.target_region}:${local.target_account}:instance/*",
+        ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "cloudwatch:DescribeAlarms",
+        ],
+        "Resource" : [
+          "arn:aws:cloudwatch:${local.target_region}:${local.target_account}:alarm:*",
+        ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
           "ec2:MonitorInstances",
           "ec2:RebootInstances",
           "ec2:RunInstances",
@@ -171,7 +259,6 @@ resource "aws_iam_policy" "student_aws_instance" {
           "ec2:StopInstances",
           "ec2:TerminateInstances",
         ],
-        # "Resource" : "*",
         "Resource" : [
           "arn:aws:ec2:${local.target_region}:${local.target_account}:instance/*",
           "arn:aws:ec2:${local.target_region}::image/*",
@@ -179,7 +266,6 @@ resource "aws_iam_policy" "student_aws_instance" {
           "arn:aws:ec2:${local.target_region}:${local.target_account}:security-group/*",
           "arn:aws:ec2:${local.target_region}:${local.target_account}:subnet/*",
           "arn:aws:ec2:${local.target_region}:${local.target_account}:volume/*",
-
           "arn:aws:ec2:${local.target_region}:${local.target_account}:vpc/*",
           "arn:aws:ec2:${local.target_region}:${local.target_account}:placement-group/*",
           "arn:aws:ec2:${local.target_region}:${local.target_account}:capacity-reservation/*",
@@ -225,9 +311,7 @@ resource "aws_iam_policy" "student_aws_s3_bucket" {
         "Effect" : "Allow",
         "Action" : [
           "s3:ListAllMyBuckets",
-          "s3:CreateBucket",
           "s3:ListBucket",
-          "s3:DeleteBucket",
           "s3:GetBucketAcl",
           "s3:GetBucketCors",
           "s3:GetBucketWebsite",
@@ -245,6 +329,16 @@ resource "aws_iam_policy" "student_aws_s3_bucket" {
           "s3:ListBucketVersions",
         ],
         "Resource" : "arn:aws:s3:::*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:CreateBucket",
+          "s3:DeleteBucket",
+          "s3:PutBucketVersioning",
+        ],
+        "Resource" : "arn:aws:s3:::*"
+        # TODO: потом добавить ограничение по региону + свои бакеты, если можно
       },
       {
         "Effect" : "Allow",
@@ -303,6 +397,7 @@ resource "aws_iam_access_key" "student" {
 
   user   = aws_iam_user.student[each.value].name
   status = var.pause_training ? "Inactive" : "Active"
+  # status = "Inactive" # TODO: for Terraform training
 }
 
 resource "aws_iam_user_group_membership" "student" {

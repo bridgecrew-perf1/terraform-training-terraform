@@ -1,5 +1,25 @@
 
+Сделать фичи через логические переменные:
+- для каждого тренинга свой набор опций
 
+[ ] ограничить время действия аккаунта по времени тренинга
+
+
+Ключи теренера сделать активными по-умолчанию.
+
+AccountId - номер ID записать в файл
+- workaround sts get-caller-identity
+
+
+использовать один профиль
+
+```console
+export AWS_DEFAULT_PROFILE=terraform-msuslov
+```
+
+iamlive --set-ini --profile terraform-msuslov --output-file policy.json --fails-only  --refresh-rate 1 --sort-alphabetical --host 127.0.0.1 --background
+
+[x] Студенты деактивируются на паузе
 
 [ ] remote state
 Егор: нужен бакет для хранения состояния terraform
@@ -10,7 +30,7 @@ https://servicedesk.luxoft.com/browse/SD-2107441
 quotas < 10 (runnning?) instances
 
 
-[ ] как вычищять?
+[ ] как вычищать?
 деньги
 - инвентаризация
 - billing panel

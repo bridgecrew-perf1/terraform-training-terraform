@@ -1,6 +1,6 @@
 
 output "aws_profile" {
-  description = "AWS region"
+  description = "AWS profile used to create resources"
   value       = var.aws_profile
 }
 
