@@ -365,6 +365,11 @@ resource "aws_iam_group_policy_attachment" "users_attach_policy_student_general"
   policy_arn = aws_iam_policy.student_general.arn
 }
 
+resource "aws_iam_group_policy_attachment" "users_attach_policy_student_aws_console" {
+  group      = aws_iam_group.students.name
+  policy_arn = aws_iam_policy.student_aws_console.arn
+}
+
 resource "aws_iam_group_policy_attachment" "users_attach_policy_student_aws_key_pair" {
   group      = aws_iam_group.students.name
   policy_arn = aws_iam_policy.student_aws_key_pair.arn
