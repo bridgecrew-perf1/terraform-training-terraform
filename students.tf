@@ -56,8 +56,6 @@ resource "aws_iam_policy" "student_aws_console" {
       {
         "Effect" : "Allow",
         "Action" : [
-          "iam:ListAccessKeys",
-          "iam:ListMFADevices",
           "iam:GetLoginProfile",
           "iam:GetUser",
           "iam:GetAccessKeyLastUsed",
@@ -72,9 +70,13 @@ resource "aws_iam_policy" "student_aws_console" {
         "Action" : [
           "iam:ListAccessKeys",
           "iam:ListMFADevices",
-          "iam:ListUsers",
         ],
-        "Resource" : "arn:aws:iam::${local.target_account}:user/"
+        "Resource" : "arn:aws:iam::${local.target_account}:user/*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : "iam:ListUsers",
+        "Resource" : "*"
       }
     ]
   })
